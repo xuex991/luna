@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content'
 import getReadingTime from 'reading-time'
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import '../../styles/blog.css'
 
 const posts = (await getCollection('posts', ({ data }) => data.isDraft !== true)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -10,55 +11,41 @@ const posts = (await getCollection('posts', ({ data }) => data.isDraft !== true)
 const minutesOf = (post: (typeof posts)[number]) => Math.ceil(getReadingTime(post.body ?? '').minutes)
 
 const description = '数据逆向：拆解 X 上的工程 claim，拉取数据验证，给出可证伪的结论。'
+const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 ---
 
 <BaseLayout title="数据逆向 | LUNA" description={description}>
-  <main class="archive-home">
-    <header class="archive-nav">
-      <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
-      <nav aria-label="Primary navigation">
+  <div class="blog-shell">
+    <header class="blog-nav">
+      <a class="blog-nav__brand" href="/">LUNA<sup>01</sup></a>
+      <nav class="blog-nav__links" aria-label="Primary navigation">
         <a href="/#cases">Cases</a>
         <a href="/#blocks">Blocks</a>
         <a href="/#playgrounds">Playgrounds</a>
         <a href="/posts" aria-current="page">Posts</a>
       </nav>
-      <span>Study archive / 2026</span>
     </header>
 
-    <section class="archive-section" id="posts" aria-labelledby="posts-title">
-      <header>
-        <span>04</span>
-        <h2 id="posts-title">数据逆向 / Teardowns</h2>
-        <p>拆解 X 上的工程 claim，拉数据验证，给出可证伪的结论。</p>
-        <b>{posts.length.toString().padStart(2, '0')}</b>
-      </header>
-      <div class="archive-list archive-list--posts">
-        {posts.map((post, i) => (
-          <a class="teardown-card" href={`/posts/${post.id}`}>
-            <header class="teardown-card__top">
-              <span>{String(i + 1).padStart(2, '0')}</span>
-              <span>{post.data.tags.slice(0, 3).join(' / ')}</span>
-              <b aria-hidden="true">&#8599;</b>
-            </header>
-            <div class="teardown-card__body">
-              <strong>{post.data.title}</strong>
-              <p>{post.data.description}</p>
+    <main class="blog-frame">
+      <p class="blog-kicker">数据逆向 / Teardowns</p>
+      <div class="blog-list">
+        {posts.map((post) => (
+          <a class="blog-list__item" href={`/posts/${post.id}`}>
+            <span class="blog-list__title">{post.data.title}</span>
+            <p class="blog-list__desc">{post.data.description}</p>
+            <div class="blog-list__meta">
+              <span>{fmt(post.data.pubDate)}</span>
+              {minutesOf(post) > 0 && <span>· {minutesOf(post)} 分钟</span>}
+              {post.data.tags.length > 0 && <span>· {post.data.tags.slice(0, 3).join(' / ')}</span>}
             </div>
-            <footer class="teardown-card__footer">
-              <span>
-                {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}
-              </span>
-              {minutesOf(post) > 0 && <span>{minutesOf(post)} 分钟</span>}
-            </footer>
           </a>
         ))}
       </div>
-    </section>
 
-    <footer class="archive-footer">
-      <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
-      <p>前端逆向与数据逆向，都是同一件事：研究好东西是怎么做出来的。</p>
-      <span>Shanghai / Online</span>
-    </footer>
-  </main>
+      <footer class="blog-footer">
+        <span>前端逆向 × 数据逆向 · 研究好东西是怎么做出来的</span>
+        <a href="/">返回首页</a>
+      </footer>
+    </main>
+  </div>
 </BaseLayout>

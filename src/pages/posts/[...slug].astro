@@ -1,7 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content'
 import getReadingTime from 'reading-time'
+import fs from 'node:fs'
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import '../../styles/blog.css'
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => data.isDraft !== true)
@@ -14,200 +16,65 @@ export async function getStaticPaths() {
 const { post } = Astro.props
 const { Content } = await render(post)
 const minutes = Math.ceil(getReadingTime(post.body ?? '').minutes)
+
+// 封面图(由 qwen-image 生成,public/assets/covers/ 下,缺失则跳过)
+const cover = `/assets/covers/${post.id}.png`
+const hasCover = fs.existsSync(new URL(`../../public/assets/covers/${post.id}.png`, import.meta.url))
+
 const title = `${post.data.title} | LUNA`
 const description = post.data.description ?? post.data.title
+const fmt = (d: Date) =>
+  d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 ---
 
-<BaseLayout title={title} description={description} pageType="article">
-  <main class="archive-home post-page">
-    <header class="archive-nav">
-      <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
-      <nav aria-label="Primary navigation">
+<BaseLayout
+  title={title}
+  description={description}
+  pageType="article"
+  image={hasCover ? cover : undefined}
+>
+  <div class="blog-shell">
+    <header class="blog-nav">
+      <a class="blog-nav__brand" href="/">LUNA<sup>01</sup></a>
+      <nav class="blog-nav__links" aria-label="Primary navigation">
         <a href="/#cases">Cases</a>
         <a href="/#blocks">Blocks</a>
         <a href="/#playgrounds">Playgrounds</a>
         <a href="/posts">Posts</a>
       </nav>
-      <span>Study archive / 2026</span>
     </header>
 
-    <article class="post">
-      <header class="post__header">
-        <a class="post__back" href="/posts">&larr; 返回列表</a>
-        <p class="post__eyebrow">数据逆向 / Teardown</p>
-        <h1>{post.data.title}</h1>
-        <div class="post__meta">
-          <time datetime={post.data.pubDate.toISOString()}>
-            {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </time>
-          {minutes > 0 && <span>· {minutes} 分钟阅读</span>}
+    <main class="blog-frame">
+      <a class="blog-article__back" href="/posts">&larr; 返回列表</a>
+
+      <article>
+        <header>
+          <p class="blog-article__eyebrow">数据逆向 / Teardown</p>
+          <h1 class="blog-article__title">{post.data.title}</h1>
+          <div class="blog-article__meta">
+            <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+            {minutes > 0 && <span>· {minutes} 分钟阅读</span>}
+            {post.data.tags.length > 0 && (
+              <ul class="blog-article__tags">
+                {post.data.tags.map((tag) => (
+                  <li><span>{tag}</span></li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </header>
+
+        {hasCover && <img class="blog-article__cover" src={cover} alt="" width="2752" height="1536" />}
+
+        <div class="blog-article__body">
+          <Content />
         </div>
-        {post.data.tags.length > 0 && (
-          <ul class="post__tags">
-            {post.data.tags.map((tag) => (
-              <li>{tag}</li>
-            ))}
-          </ul>
-        )}
-      </header>
+      </article>
 
-      {post.data.description && <p class="post__lede">{post.data.description}</p>}
-
-      <div class="post__body">
-        <Content />
-      </div>
-    </article>
-
-    <footer class="archive-footer">
-      <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
-      <p>前端逆向与数据逆向，都是同一件事：研究好东西是怎么做出来的。</p>
-      <span>Shanghai / Online</span>
-    </footer>
-  </main>
+      <footer class="blog-footer">
+        <span>前端逆向 × 数据逆向 · 研究好东西是怎么做出来的</span>
+        <a href="/posts">返回列表</a>
+      </footer>
+    </main>
+  </div>
 </BaseLayout>
-
-<style>
-  .post {
-    max-width: 46rem;
-    margin: 0 auto;
-    padding: 3rem 0 6rem;
-  }
-  .post__back {
-    display: inline-block;
-    margin-bottom: 2rem;
-    color: var(--muted, #8a8f98);
-    font-size: 0.85rem;
-    text-decoration: none;
-  }
-  .post__back:hover {
-    color: inherit;
-  }
-  .post__eyebrow {
-    color: var(--muted, #8a8f98);
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  .post__header h1 {
-    font-size: clamp(1.9rem, 4vw, 2.6rem);
-    line-height: 1.25;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.25rem;
-  }
-  .post__meta {
-    display: flex;
-    gap: 0.75rem;
-    color: var(--muted, #8a8f98);
-    font-size: 0.85rem;
-  }
-  .post__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-    padding: 0;
-    list-style: none;
-  }
-  .post__tags li {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.7rem;
-    border: 1px solid var(--line, rgba(255, 255, 255, 0.14));
-    border-radius: 999px;
-    color: var(--muted, #8a8f98);
-  }
-  .post__lede {
-    margin: 2rem 0 0;
-    padding: 1.25rem 1.5rem;
-    border-left: 2px solid currentColor;
-    background: rgba(255, 255, 255, 0.04);
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--muted, #a8adb6);
-  }
-
-  /* ---- 正文排版 ---- */
-  .post__body {
-    margin-top: 3rem;
-    font-size: 1.02rem;
-    line-height: 1.85;
-  }
-  .post__body h2 {
-    font-size: 1.5rem;
-    letter-spacing: -0.02em;
-    margin: 3rem 0 1.25rem;
-    padding-top: 0.5rem;
-  }
-  .post__body h3 {
-    font-size: 1.2rem;
-    margin: 2.25rem 0 1rem;
-  }
-  .post__body p {
-    margin: 1.1rem 0;
-  }
-  .post__body ul,
-  .post__body ol {
-    margin: 1.1rem 0;
-    padding-left: 1.5rem;
-  }
-  .post__body ul {
-    list-style: disc;
-  }
-  .post__body li {
-    margin: 0.45rem 0;
-  }
-  .post__body blockquote {
-    margin: 1.5rem 0;
-    padding: 0.25rem 0 0.25rem 1.25rem;
-    border-left: 2px solid currentColor;
-    color: var(--muted, #a8adb6);
-  }
-  .post__body code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.9em;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
-  }
-  .post__body pre {
-    margin: 1.5rem 0;
-    padding: 1.25rem;
-    overflow-x: auto;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--line, rgba(255, 255, 255, 0.08));
-    border-radius: 8px;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-  .post__body pre code {
-    background: none;
-    padding: 0;
-  }
-  .post__body table {
-    width: 100%;
-    margin: 1.5rem 0;
-    border-collapse: collapse;
-    font-size: 0.92rem;
-  }
-  .post__body th,
-  .post__body td {
-    border: 1px solid var(--line, rgba(255, 255, 255, 0.12));
-    padding: 0.6rem 0.85rem;
-    text-align: left;
-  }
-  .post__body th {
-    background: rgba(255, 255, 255, 0.05);
-    font-weight: 600;
-  }
-  .post__body hr {
-    border: none;
-    border-top: 1px solid var(--line, rgba(255, 255, 255, 0.1));
-    margin: 2.5rem 0;
-  }
-  .post__body a {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-</style>
