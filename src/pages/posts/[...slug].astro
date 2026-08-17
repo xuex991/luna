@@ -1,6 +1,5 @@
 ---
 import { getCollection, render } from 'astro:content'
-import getReadingTime from 'reading-time'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import '../../styles/blog.css'
 
@@ -14,55 +13,29 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props
 const { Content } = await render(post)
-const minutes = Math.ceil(getReadingTime(post.body ?? '').minutes)
 
 const title = `${post.data.title} | LUNA`
 const description = post.data.description ?? post.data.title
-const fmt = (d: Date) =>
-  d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
 ---
 
 <BaseLayout title={title} description={description} pageType="article">
   <div class="blog-shell">
-    <header class="blog-nav">
-      <a class="blog-nav__brand" href="/">LUNA<sup>01</sup></a>
-      <nav class="blog-nav__links" aria-label="Primary navigation">
-        <a href="/#cases">Cases</a>
-        <a href="/#blocks">Blocks</a>
-        <a href="/#playgrounds">Playgrounds</a>
-        <a href="/posts">Posts</a>
-      </nav>
-    </header>
-
-    <main class="blog-frame">
-      <a class="blog-article__back" href="/posts">&larr; 返回列表</a>
-
-      <article>
-        <header>
-          <p class="blog-article__eyebrow">数据逆向 / Teardown</p>
-          <h1 class="blog-article__title">{post.data.title}</h1>
-          <div class="blog-article__meta">
+    <main class="blog-article">
+      <article class="blog-frame">
+        <h1 class="blog-article__title">{post.data.title}</h1>
+        <a class="blog-article__byline" href="/posts">
+          <img class="blog-article__avatar" src="/assets/visuals/luna-avatar.svg" alt="" width="20" height="20" />
+          <span class="blog-article__byline-meta">
             <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
-            {minutes > 0 && <span>· {minutes} 分钟阅读</span>}
-            {post.data.tags.length > 0 && (
-              <ul class="blog-article__tags">
-                {post.data.tags.map((tag) => (
-                  <li><span>{tag}</span></li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </header>
-
+            <span aria-hidden="true">·</span>
+            <span>LUNA</span>
+          </span>
+        </a>
         <div class="blog-article__body">
           <Content />
         </div>
       </article>
-
-      <footer class="blog-footer">
-        <span>前端逆向 × 数据逆向 · 研究好东西是怎么做出来的</span>
-        <a href="/posts">返回列表</a>
-      </footer>
     </main>
   </div>
 </BaseLayout>
