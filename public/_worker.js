@@ -21,6 +21,11 @@ export default {
       return Response.redirect(url.toString(), 308)
     }
 
+    if (url.pathname === '/blog' || url.pathname === '/blog/') {
+      url.pathname = '/posts'
+      return Response.redirect(url.toString(), 308)
+    }
+
     if (url.pathname.length > 1 && url.pathname.endsWith('/')) {
       url.pathname = url.pathname.slice(0, -1)
       return Response.redirect(url.toString(), 308)
