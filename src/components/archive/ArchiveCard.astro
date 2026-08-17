@@ -1,0 +1,46 @@
+---
+type Props = {
+  index: string
+  name: string
+  focus: string
+  stack: string
+  preview: string
+  href: string
+  status?: string
+  darkPreview?: boolean
+  eager?: boolean
+  metaLabel?: string
+}
+
+const {
+  index,
+  name,
+  focus,
+  stack,
+  preview,
+  href,
+  status = 'Available',
+  darkPreview = false,
+  eager = false,
+  metaLabel = 'Tools',
+} = Astro.props
+---
+
+<a class="archive-card" href={href}>
+  <header class="archive-card__top">
+    <span>{index}</span>
+    <span>{status}</span>
+    <b aria-hidden="true">&#8599;</b>
+  </header>
+  <figure class:list={['archive-card__preview', { 'archive-card__preview--dark': darkPreview }]}>
+    <img src={preview} alt={`${name} effect preview`} loading={eager ? 'eager' : 'lazy'} width="960" height="540" />
+  </figure>
+  <div class="archive-card__body">
+    <strong>{name}</strong>
+    <p>{focus}</p>
+  </div>
+  <footer class="archive-card__footer">
+    <span>{metaLabel}</span>
+    <span>{stack}</span>
+  </footer>
+</a>

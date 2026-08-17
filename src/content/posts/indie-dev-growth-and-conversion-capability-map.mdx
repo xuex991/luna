@@ -1,0 +1,487 @@
+---
+title: "agent harness 与成交能力地图"
+description: "把独立开发中的获客与成交问题先压缩成一个公式：流量、展示、转化。先给出总图，再作为后续细分的起点。"
+pubDate: 2026-05-20
+updatedDate: 2026-05-20
+tags: ["indie-hacking", "growth", "conversion", "ui", "consulting"]
+isDraft: false
+relatedPosts: []
+---
+
+先把 `agent harness` 定义得更短一点：
+
+**agent harness = 用来展示、约束和放大智能的产品框架。**
+
+模型本身决定智能上限，`harness` 决定这些智能能不能被用户看见、信任和反复使用。
+
+如果借操作系统的类比来看，模型像 `kernel`，而 harness 更像 `runtime + shell + permissions + observability`。  
+它至少要解决五件事：
+
+- 怎么给智能喂上下文
+- 怎么让智能调用工具
+- 怎么把中间状态暴露出来
+- 怎么控制风险和权限
+- 怎么让结果可复查、可接管、可迭代
+
+所以 `harness` 不是一个抽象名词，它应该能被测量。
+
+### 可以怎么测量 harness
+
+先只保留最小的一组，而且都必须能直接测：
+
+#### 1. `Task Success Rate`
+
+任务完成率。  
+给定一组固定任务，最后真正完成了多少。
+
+这是第一指标。  
+因为 harness 的目标不是“输出很多字”，而是把任务做完。
+
+#### 2. `Latency to Outcome`
+
+从任务发起到拿到可用结果，需要多久。
+
+同样能完成任务，耗时差很多，产品价值就差很多。
+
+#### 3. `Tool Success Rate`
+
+工具调用成功率。  
+包括有没有调对工具、参数对不对、调用后有没有拿到有效结果。
+
+这决定它是不是只能回答，还是能稳定执行。
+
+#### 4. `Intervention Rate`
+
+人工介入率。  
+一批任务里，有多少必须靠人接管才能完成。
+
+这决定它到底是自动化系统，还是半自动助手。
+
+如果还要再补一个，我只会补：
+
+- `Cost per Successful Task`
+
+不是看总 cost，而是看完成一个成功任务要花多少钱。
+
+这套口径更实用，因为它们都能放进 eval 里反复跑。  
+像“状态暴露能力”“控制与安全能力”很重要，但它们更像设计要求，不适合直接当一阶指标。
+
+我先把独立开发中的获客与成交问题简化成一个公式：
+
+`获客与成交能力 = 流量 × 展示 × 转化`
+
+这篇先不讨论交付，只看成交前的三件事：客户从哪里来，为什么愿意继续了解你，为什么最后选择你。
+
+## 流量
+
+流量不是“多发内容”这么简单。  
+它本质上是在解决一个问题：
+
+**你有没有稳定命中正在找这类解决方案的人。**
+
+所以流量可以先压缩成两个变量：
+
+- `渠道`：用户会在哪里找人
+- `关键词`：用户会用什么词描述他的需求
+
+如果这两个没对上，你后面的展示做得再漂亮，客户也看不到。
+
+### 先看真实市场在买什么
+
+如果只看大厂，会很容易把 Agent 市场理解成：
+
+- 通用 Agent
+- Coding Agent
+- Enterprise Agent
+
+但如果看 Fiverr、Upwork 这类真实成交平台，买家的问题通常没这么抽象。  
+他们不是在搜索“我要一个通用 agent 产品”，而是在搜索：
+
+- `ai chatbot`
+- `rag assistant`
+- `n8n ai agent`
+- `voice agent`
+- `appointment booking`
+- `lead qualification`
+- `crm automation`
+- `whatsapp agent`
+- `knowledge base assistant`
+
+也就是说，**买家是按业务结果搜索，不是按技术范式搜索。**
+
+### 更接近独立开发成交的关键词
+
+我会先把关键词分成五组：
+
+#### 1. 对话与客服
+
+- `ai chatbot`
+- `customer support chatbot`
+- `website chatbot`
+- `faq bot`
+- `whatsapp ai agent`
+- `support assistant`
+
+#### 2. 知识库与 RAG
+
+- `rag`
+- `knowledge base assistant`
+- `pdf chatbot`
+- `internal docs assistant`
+- `chat with documents`
+- `mcp developer`
+
+#### 3. 自动化与工作流
+
+- `n8n ai agent`
+- `workflow automation`
+- `make automation`
+- `crm automation`
+- `api integration`
+- `lead follow-up automation`
+
+#### 4. 语音与销售
+
+- `voice agent`
+- `ai calling agent`
+- `appointment booking agent`
+- `lead qualification`
+- `outbound calling`
+- `sales assistant`
+
+#### 5. 垂直场景工作台
+
+- `real estate assistant`
+- `clinic booking assistant`
+- `hotel booking agent`
+- `recruiting assistant`
+- `project management assistant`
+- `linear assistant`
+
+这一层非常重要，因为它决定了你后面所有内容的命名方式。  
+你写“我做 agent 产品”，太大。  
+你写“我做 RAG + n8n + CRM 的销售跟进工作台”，客户马上就能把你放进一个具体抽屉里。
+
+### 适合独立开发者的流量渠道
+
+对这类服务，流量渠道通常也有明显分层：
+
+#### 1. 主动搜索型渠道
+
+- Google / SEO
+- Fiverr
+- Upwork
+- Contra
+
+这里最重要的不是观点，而是词的覆盖率。  
+标题、页面结构、案例命名，都要尽量贴合买家的原始搜索语言。
+
+#### 2. 社交证明型渠道
+
+- X
+- LinkedIn
+- Reddit
+- YouTube
+
+这里不是为了“发内容”，而是为了持续证明你真的在做这类项目。  
+最有效的内容通常不是空泛观点，而是：
+
+- 拆项目
+- 展流程
+- 放前后对比
+- 讲限制条件
+
+#### 3. 资产沉淀型渠道
+
+- 个人网站
+- 博客
+- GitHub
+- demo / template / boilerplate
+
+这些渠道的作用不是拉第一波流量，而是承接和放大已经发生的兴趣。  
+别人点进来后，要能快速确认你是不是做这个的。
+
+## 展示
+
+我觉得“展示”这部分，用两个维度会更直接：
+
+1. `你做什么`
+2. `你凭什么做得成`
+
+前者解决定位，后者解决信任。  
+也可以换一种说法：
+
+- `问题占位`
+- `能力证据`
+
+这比“覆盖行业关键词 + 展示个人能力”更容易一眼理解。
+
+### 1. 你做什么：问题占位
+
+客户进来后的第一判断非常粗暴：
+
+**你是不是做我这个问题的人。**
+
+所以展示的第一层，不是审美，不是文案气质，而是让客户迅速完成分类。
+
+你的网站、文章、案例、服务页，最好都围绕具体问题命名，而不是围绕抽象能力命名。
+
+比如相比于：
+
+- AI builder
+- full-stack with AI
+- agent engineer
+
+更容易成交的表达通常是：
+
+- 为销售团队做 `lead qualification + booking` agent
+- 为客服团队做 `RAG support assistant`
+- 为内部流程做 `n8n + CRM automation`
+- 为 SaaS 做 `agent workspace / harness UI`
+
+### 2. 你凭什么做得成：能力证据
+
+客户的第二个判断是：
+
+**你不是只会说概念，而是真的能把这东西做出来。**
+
+这里可以把个人能力拆成几个更容易被看见的模块。
+
+#### 产品化能力
+
+不是会写功能，而是能把一个模糊需求收束成可上线的结构：
+
+- 能定义一个清晰场景
+- 能切 MVP 边界
+- 能把能力打包成 workflow / screen / step
+- 能决定什么该自动化，什么该保留人工确认
+
+#### UI / 工作台能力
+
+很多 agent 产品最后输赢，不在模型，而在工作台是否好用。  
+你要能证明自己不只是接 API，而是知道怎么把复杂状态摆到界面上。
+
+可以展示的点包括：
+
+- 对话 + 状态 + 结果的布局能力
+- 多面板工作台设计
+- 审批、trace、日志、来源、artifact 的呈现
+- 面向业务角色的任务流，而不是只做一个输入框
+
+#### 自动化与集成能力
+
+这部分是很多买家真正付钱的地方：
+
+- API 集成
+- CRM / Notion / Slack / WhatsApp / email 接入
+- n8n / Make / webhook 编排
+- 权限、重试、fallback、日志
+
+#### 可靠性能力
+
+真正会成交的客户，后面都会问这个：
+
+- 出错怎么办
+- 幻觉怎么办
+- 能不能人工接管
+- 有没有监控和日志
+
+所以你最好提前展示：
+
+- guardrails
+- approval step
+- retry / fallback
+- human-in-the-loop
+- observability
+
+#### 场景理解能力
+
+如果你做的是垂直场景，这一层往往比技术栈更重要。
+
+比如你不是在卖“voice agent”，你是在卖：
+
+- 牙科诊所的预约电话流
+- 房产销售的 lead qualification
+- 招聘团队的候选人初筛
+
+同样的技术壳，换个行业，成交难度会完全不同。  
+因为客户会默认更懂业务的人更省沟通成本。
+
+## 转化
+
+流量把人带来，展示让人愿意看下去，转化解决的是最后一步：
+
+**怎么让客户低阻力地做决定。**
+
+很多独立开发者不是没有能力，而是最后一步太重了。  
+客户看完之后，还是不知道该怎么买你。
+
+### 转化的核心，不是“说服”，而是“降低判断成本”
+
+客户通常要在很短时间里完成四个判断：
+
+1. 你做不做这个
+2. 你是不是做过这个
+3. 我大概要花多少钱
+4. 下一步应该怎么开始
+
+如果这四件事页面上不清楚，转化就会掉。
+
+### 一个更实用的转化结构
+
+我会建议把转化页尽量压成这几块：
+
+#### 1. 一句话报价对象
+
+不要写成“提供 AI 解决方案”。  
+尽量写成：
+
+- 为服务型公司搭建 `AI booking + follow-up` 工作流
+- 为内容和运营团队搭建 `RAG + automation` 内部助手
+- 为 SaaS 产品补齐 `agent harness UI` 和工作台层
+
+#### 2. 明确交付边界
+
+客户怕的不是贵，客户怕的是范围失控。  
+所以你要把交付切清楚，比如：
+
+- 发现与方案梳理
+- prototype / demo
+- MVP build
+- integration
+- dashboard / workspace UI
+- post-launch tuning
+
+#### 3. 放案例证据
+
+证据不一定非得是大客户 logo。  
+对于独立开发者，更有效的往往是：
+
+- before / after
+- demo video
+- screen flow
+- system diagram
+- 关键页面截图
+- 你为什么这么设计
+
+#### 4. 提供低摩擦入口
+
+不要一上来就让客户“长期合作再聊”。  
+可以先给更轻的入口：
+
+- 30 分钟诊断
+- 付费方案梳理
+- 3 到 5 天 prototype
+- 先做一个最小流程
+
+这类入口的作用，是把一次高风险购买，拆成一次小决策。
+
+## 从平台需求反推一份场景图谱
+
+如果从 Fiverr、Upwork 上能观察到的需求反推，我会先把独立开发者适合切入的 `agent harness` 图谱，整理成下面几类：
+
+### 1. Support Harness
+
+核心任务：
+
+- 回答 FAQ
+- 查询知识库
+- 分流问题
+- 转人工
+
+常见组合：
+
+- chatbot
+- RAG
+- help center
+- ticketing
+
+### 2. Sales Harness
+
+核心任务：
+
+- 线索收集
+- 资格判断
+- 跟进
+- 预约
+
+常见组合：
+
+- voice agent
+- CRM
+- calendar
+- WhatsApp / email / SMS
+
+### 3. Ops Harness
+
+核心任务：
+
+- 跨工具搬运数据
+- 自动触发流程
+- 生成报告
+- 异常提醒
+
+常见组合：
+
+- n8n
+- Make
+- Slack
+- Notion
+- Airtable
+- internal dashboard
+
+### 4. Knowledge Harness
+
+核心任务：
+
+- 文档检索
+- 内部问答
+- SOP 查询
+- 文件理解
+
+常见组合：
+
+- RAG
+- vector store
+- docs portal
+- permissions
+
+### 5. Role-Specific Harness
+
+核心任务：
+
+- 面向某个角色收束工作流
+- 把复杂系统变成一个窄但高频的工作台
+
+常见方向：
+
+- PM / Linear assistant
+- recruiter assistant
+- clinic front-desk assistant
+- real-estate lead desk
+
+这一层的意义，不是为了把市场分类得很学术。  
+而是为了让你决定：
+
+- 你要占哪个问题词
+- 你要做哪类案例
+- 你的网站首页第一屏写什么
+- 你的 demo 应该长什么样
+
+## 最后
+
+如果把这篇压缩成一句话，就是：
+
+**独立开发者的获客与成交，不是先证明自己会很多技术，而是先让市场快速理解你解决哪一类问题，并且相信你能把它做成一个可用的 harness。**
+
+所以我目前更认可的拆法是：
+
+- `流量`：你有没有在对的渠道里命中对的问题词
+- `展示`：你做什么，你凭什么做得成
+- `转化`：你有没有把购买决策压缩到足够低摩擦
+
+后面如果继续展开，我会优先拆三件事：
+
+1. `agent harness` 的场景图谱怎么画
+2. 不同 harness 为什么会长出不同 UI
+3. 独立开发者应该怎样把能力包装成更容易成交的服务页

@@ -1,0 +1,398 @@
+---
+title: 'Agent 产品是什么，通常长什么样：一份按产品形态拆开的界面地图'
+description: '不是按公司看 Agent，而是按产品形态看。把 Chat、Coding、Workflow、Platform 四类 Agent 产品分别拆成核心屏、典型布局和设计重心。'
+pubDate: 2026-05-20
+updatedDate: 2026-05-20
+tags:
+  ['agent', 'ui', 'product-design', 'copilot', 'workflow', 'platform']
+isDraft: false
+relatedPosts: []
+---
+
+## 1. Thesis
+
+如果只看品牌，你会觉得 Agent 市场很乱。  
+如果按产品形态看，其实没有那么乱。
+
+今天市面上的主流 Agent 产品，最后大多会落到四种界面形态里：
+
+1. `Chat / Research Agent`
+2. `Coding Agent`
+3. `Workflow / Enterprise Agent`
+4. `Agent Platform`
+
+它们最大的差别，不是模型，而是：
+
+- 用户在这里要完成什么
+- 系统最关键的状态是什么
+- UI 必须把什么信息持续暴露出来
+
+所以真正该问的不是“Agent UI 应该怎么设计”，而是：
+
+**什么任务，会把 Agent 推向什么界面形态。**
+
+> 💡 **阅读方式**
+> 下面每一类我都只回答四件事：它是什么、核心屏是什么、典型布局是什么、为什么会长成这样。这样密度更高，也更接近真实产品判断。
+
+## 2. Product Taxonomy
+
+先把分类钉死。
+
+### A. Chat / Research Agent
+
+这类产品的核心是：  
+**用户用自然语言发起任务，系统以对话和任务流回应。**
+
+它可能会联网、搜索、读文件、开网页，但用户的心智仍然是“我在发起一个请求”。
+
+代表方向：
+
+- ChatGPT
+- ChatGPT agent / research agent 路线
+- 各类 AI assistant / AI copilot
+
+### B. Coding Agent
+
+这类产品的核心是：  
+**用户不是来聊天，而是来交付代码变更。**
+
+系统必须直接接触：
+
+- 文件
+- diff
+- terminal
+- test
+- repo context
+
+代表方向：
+
+- Claude Code
+- Amazon Q Developer
+- GitHub Copilot 的 workspace / coding flow
+
+### C. Workflow / Enterprise Agent
+
+这类产品的核心是：  
+**把 Agent 嵌进业务流程，而不是做一个通用聊天入口。**
+
+它关心的是：
+
+- 记录
+- 队列
+- 审批
+- handoff
+- policy
+- connectors
+
+代表方向：
+
+- Microsoft Copilot Studio agents
+- Salesforce Agentforce
+- ServiceNow agentic AI
+
+### D. Agent Platform
+
+这类产品的核心是：  
+**不是操作一个 Agent，而是管理一组 Agent 系统。**
+
+它关心的是：
+
+- build
+- deploy
+- trace
+- evaluate
+- govern
+
+代表方向：
+
+- Vertex AI Agent Builder
+- 各类 orchestration / observability / AgentOps 平台
+
+## 3. Chat / Research Agent
+
+### 它是什么
+
+它本质上是一个**对话式任务入口**。  
+用户先说需求，系统再决定是回答、搜索、浏览、总结，还是输出结果。
+
+### 核心屏是什么
+
+这一类产品真正的核心屏，不是首页，而是 `conversation + live task state`。
+
+也就是说，真正重要的不是输入框，而是这四种状态能不能被同时看见：
+
+- 当前任务是什么
+- 它正在做什么
+- 它看了哪些来源
+- 最后给了什么结果
+
+### 典型布局
+
+第一代形态是：
+
+- 左栏：会话历史
+- 中栏：消息流
+- 底部：输入框
+
+但只要它开始执行真实任务，界面就会往“多面板”长：
+
+- 左栏：历史 / 项目 / 任务列表
+- 中栏：对话 + plan + steps
+- 右栏：网页预览 / sources / artifacts
+
+所以这一类产品的 canonical layout 其实不是单聊天流，而是：
+
+`Conversation + Plan + Source / Preview`
+
+### 为什么会长成这样
+
+因为单一消息流有三个问题：
+
+1. 不能稳定展示任务状态
+2. 不能承载 source inspection
+3. 不能支持“自动执行”和“人工接管”切换
+
+所以只要产品真的进入“action”阶段，就会自然长出侧栏、步骤面板和预览面板。
+
+### 值得看的 UI 参考
+
+- `Agentic UI - Agent Chat` by Alex Gilev  
+  https://dribbble.com/shots/27185635-Agentic-UI-Agent-Chat  
+  这个案例值得看的不是视觉，而是它把聊天、思考状态和任务结构拆成了多层信息。
+
+- `AI Copilot Dashboard` by Flyaps  
+  https://dribbble.com/shots/27046142-AI-Copilot-Dashboard  
+  这个更接近“copilot workspace”，已经不是纯消息流，而是任务型面板。
+
+## 4. Coding Agent
+
+### 它是什么
+
+Coding Agent 不是聊天产品的一个 tab。  
+它本质上是一个**代码变更执行系统**。
+
+用户关心的不是它说得多聪明，而是：
+
+- 它改了哪里
+- 为什么这么改
+- 现在仓库状态怎样
+- 测试有没有过
+
+### 核心屏是什么
+
+它的核心屏永远是这些元素的组合：
+
+- repo context
+- active file / diff
+- agent thread
+- terminal / logs
+
+这四个里，聊天反而不是中心，`diff` 和 `execution trace` 才是中心。
+
+### 典型布局
+
+最常见的是 IDE 派：
+
+- 左栏：文件树 / symbols / changes
+- 中栏：编辑器 / diff viewer
+- 右栏：agent plan / chat / suggested changes
+- 底部：terminal / tests / logs
+
+另一种是 terminal 派：
+
+- 主界面直接是 terminal
+- 用 command、patch、plan、approval 来构成交互
+
+### 为什么会长成这样
+
+因为编码任务的可信度不是靠语言建立的，而是靠以下证据建立的：
+
+- 文件级上下文
+- 变更对比
+- 命令执行
+- 测试结果
+
+所以 Coding Agent 的 UI 必然比 Chat Agent 更“硬”，更像工作台，而不是助手。
+
+### 值得看的 UI 参考
+
+- `AI Assistant Dashboard UI – Developer Productivity & Performance` by Orizon  
+  https://dribbble.com/shots/26925224-AI-Assistant-Dashboard-UI-Developer-Productivity-Performance  
+  这个适合看“开发者助手”会如何把效率、上下文和执行状态做成一个工作台。
+
+- `AI Agent Activity Dashboard` by Dmitry Sergushkin  
+  https://dribbble.com/shots/26451143-AI-Agent-Activity-Dashboard  
+  这个更偏 activity / monitoring，但很适合参考 coding agent 的状态暴露方式。
+
+## 5. Workflow / Enterprise Agent
+
+### 它是什么
+
+这类产品不是让用户来“问 AI”。  
+它们的目标是把 Agent 放进组织流程。
+
+所以它更像：
+
+- 业务系统上的一个 agent layer
+- 流程系统上的一个 automation layer
+
+### 核心屏是什么
+
+这一类通常有两个核心屏，而不是一个：
+
+第一是 `Builder Screen`
+
+- 配 agent
+- 配 tools
+- 配 connectors
+- 配 guardrails
+- 配 workflow
+
+第二是 `Operator Screen`
+
+- 看队列
+- 看 case
+- 看建议动作
+- 决定 handoff / approval
+
+### 典型布局
+
+Builder 视角常见是：
+
+- 左栏：nodes / tool list / agent list
+- 中间：canvas / flow builder
+- 右栏：config inspector
+
+Operator 视角常见是：
+
+- 左栏：队列 / filter
+- 中栏：record / case detail
+- 右栏：AI summary / suggested actions / confidence / next best action
+
+### 为什么会长成这样
+
+因为企业流程里的核心问题不是“答案”，而是“责任”。
+
+这会直接推高四个 UI 需求：
+
+- 审批
+- 可追踪
+- 权限边界
+- human handoff
+
+所以这类产品不可能像消费级聊天产品那样极简，它必须保留大量结构化界面。
+
+### 值得看的 UI 参考
+
+- `Outomate – Automation Chatbot AI Dashboard` by Dipa Inhouse  
+  https://dribbble.com/shots/26543838-Outomate-Automation-Chatbot-AI-Dashboard  
+  这个案例比较接近“运营型 AI 工作台”，看点是任务、统计和操作面板并置。
+
+- `Visual Workflow Builder for Lantern` by Eugen Eșanu  
+  https://dribbble.com/shots/25278049--Visual-Workflow-Builder-for-Lantern  
+  这是更接近 builder mental model 的参考，适合看 workflow agent 为什么最后会长成 canvas + inspector。
+
+## 6. Agent Platform
+
+### 它是什么
+
+Agent Platform 不是某个 Agent 的 prettier UI。  
+它是“Agent 作为系统资源”之后才会出现的界面层。
+
+它面向的不是 end user，而是：
+
+- platform team
+- infra / ML / AI engineering
+- operations
+- governance owner
+
+### 核心屏是什么
+
+这类产品最重要的不是聊天页，而是：
+
+- agent registry
+- runs / traces
+- evals
+- deployments
+- knowledge / tool bindings
+- policy
+
+所以它的核心屏更像云控制台，而不是 AI 应用。
+
+### 典型布局
+
+最常见的布局是：
+
+- 顶部：environment / project / deployment scope
+- 左栏：agents / tools / traces / evals / settings
+- 中间：table、timeline、trace graph、run detail
+- 右栏：config、metadata、log detail
+
+换句话说，canonical layout 是：
+
+`Console Navigation + Table / Trace Surface + Detail Inspector`
+
+### 为什么会长成这样
+
+因为当 Agent 变成平台能力时，真正重要的是：
+
+- 哪个 agent 在跑
+- 用了什么工具
+- 出了什么错
+- 成本怎样
+- 哪次版本变更影响了结果
+
+所以 UI 会自然靠近：
+
+- 云控制台
+- DevOps 平台
+- observability system
+
+### 值得看的 UI 参考
+
+- `AI Agent Activity Dashboard` by Dmitry Sergushkin  
+  https://dribbble.com/shots/26451143-AI-Agent-Activity-Dashboard  
+  这类 dashboard 虽然不等于真正的平台，但很适合看 activity / health / trace 的信息组织方式。
+
+- `AI Copilot Dashboard` by Flyaps  
+  https://dribbble.com/shots/27046142-AI-Copilot-Dashboard  
+  它虽然名字叫 copilot，但很多区域其实已经往 platform workspace 靠了。
+
+## 7. What This Means
+
+如果现在让我用一句话概括不同 Agent 产品的长相：
+
+- `Chat / Research Agent` 像对话 + 预览
+- `Coding Agent` 像 IDE + terminal + diff
+- `Workflow / Enterprise Agent` 像业务系统 + 流程构建器
+- `Agent Platform` 像云控制台 + trace 控制台
+
+所以一个很常见的误区是：
+
+> 用聊天框去理解所有 Agent 产品。
+
+这会直接把后面的设计做偏。
+
+更准确的判断方式应该是：
+
+1. 先判断任务类型
+2. 再判断要暴露的系统状态
+3. 最后决定 UI 应该长成 chat、workspace、builder，还是 console
+
+如果这三个顺序反过来，界面通常会很快失真。
+
+## References
+
+- OpenAI, ChatGPT agent: https://openai.com/index/introducing-chatgpt-agent/
+- Anthropic, Claude Code: https://www.anthropic.com/product/claude-code
+- Anthropic Docs, Claude Code overview: https://docs.anthropic.com/en/docs/claude-code/overview
+- Microsoft Copilot Studio: https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio/
+- Salesforce Agentforce: https://www.salesforce.com/news/press-releases/2024/09/12/agentforce-announcement/
+- ServiceNow agentic AI: https://www.servicenow.com/uk/company/media/press-room/ai-agents-studio.html
+- Google Cloud, Vertex AI Agent Builder: https://cloud.google.com/products/agent-builder
+- Dribbble, Agentic UI - Agent Chat: https://dribbble.com/shots/27185635-Agentic-UI-Agent-Chat
+- Dribbble, AI Copilot Dashboard: https://dribbble.com/shots/27046142-AI-Copilot-Dashboard
+- Dribbble, AI Assistant Dashboard UI – Developer Productivity & Performance: https://dribbble.com/shots/26925224-AI-Assistant-Dashboard-UI-Developer-Productivity-Performance
+- Dribbble, Outomate – Automation Chatbot AI Dashboard: https://dribbble.com/shots/26543838-Outomate-Automation-Chatbot-AI-Dashboard
+- Dribbble, AI Agent Activity Dashboard: https://dribbble.com/shots/26451143-AI-Agent-Activity-Dashboard
+- Dribbble, Visual Workflow Builder for Lantern: https://dribbble.com/shots/25278049--Visual-Workflow-Builder-for-Lantern

@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { BlocksPage } from '../views/BlocksPage'
+
+const description = 'Preview and inspect reusable React, GSAP, Canvas and Three.js interface blocks extracted from LUNA case-copy studies.'
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'LUNA Blocks',
+  url: new URL('/blocks', Astro.site).toString(),
+  description,
+  numberOfItems: 4,
+}
+---
+
+<BaseLayout title="Blocks | LUNA Digital Light Studies" description={description} structuredData={structuredData} lang="en">
+  <BlocksPage client:load />
+</BaseLayout>

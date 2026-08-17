@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { PlaygroundsPage } from '../views/PlaygroundsPage'
+
+const description = 'Interactive Three.js playgrounds for testing how material, light color, position and intensity change a digital scene.'
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Material & Light Playground',
+  applicationCategory: 'DesignApplication',
+  operatingSystem: 'Web',
+  url: new URL('/playgrounds', Astro.site).toString(),
+  description,
+}
+---
+
+<BaseLayout title="Material & Light Playground | LUNA" description={description} image="/assets/previews/material-light.png" structuredData={structuredData} lang="en">
+  <PlaygroundsPage client:load />
+</BaseLayout>

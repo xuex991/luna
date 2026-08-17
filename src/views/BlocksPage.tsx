@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { StartProjectBlock } from '../components/hero/StartProjectBlock'
+import { ReactiveThreeBackground } from '../components/hero/ReactiveThreeBackground'
 import { TitleBlock } from '../components/hero/TitleBlock'
+import { ElectricGuideLines } from '../components/motion/ElectricGuideLines'
+import electricGuideLinesSource from '../components/motion/ElectricGuideLines.tsx?raw'
+import reactiveThreeBackgroundSource from '../components/hero/ReactiveThreeBackground.tsx?raw'
 import titleBlockSource from '../components/hero/TitleBlock.tsx?raw'
 import wordShiftButtonSource from '../components/ui/WordShiftButton.tsx?raw'
 
@@ -14,9 +18,10 @@ type BlockCardProps = {
   prompt: string
   code: string
   children: ReactNode
+  previewTheme?: 'light' | 'dark'
 }
 
-function BlockCard({ name, category, description, prompt, code, children }: BlockCardProps) {
+function BlockCard({ name, category, description, prompt, code, children, previewTheme = 'light' }: BlockCardProps) {
   const [view, setView] = useState<View>('preview')
   const [copied, setCopied] = useState(false)
 
@@ -52,7 +57,7 @@ function BlockCard({ name, category, description, prompt, code, children }: Bloc
           {view !== 'preview' && <button className="block-card__copy" onClick={copy} type="button">{copied ? 'Copied' : 'Copy'}</button>}
         </div>
         {view === 'preview'
-          ? <div className="block-card__preview">{children}</div>
+          ? <div className={`block-card__preview block-card__preview--${previewTheme}`}>{children}</div>
           : <pre className="block-card__code"><code>{view === 'code' ? code : prompt}</code></pre>}
       </div>
     </article>
@@ -74,6 +79,22 @@ const blocks = [
     prompt: 'Create a minimal text CTA for a creative studio. On hover, shift the letters as a group, swap the arrow direction, and draw an underline from the opposite side.',
     preview: <StartProjectBlock className="blocks-preview__button" />,
   },
+  {
+    name: 'Electric Guide Lines 01', category: 'Canvas interaction',
+    description: 'Touch a guide line to send a short electrical arc across the field.',
+    code: electricGuideLinesSource,
+    prompt: 'Create three subtle animated guide lines on a dark canvas. When the pointer touches a line, emit a short layered electrical arc toward another line.',
+    preview: <ElectricGuideLines />,
+    previewTheme: 'dark' as const,
+  },
+  {
+    name: 'Reactive 3D Mark 01', category: 'Three.js interaction',
+    description: 'A metallic 3D mark that idles, follows the pointer, and flashes on contact.',
+    code: reactiveThreeBackgroundSource,
+    prompt: 'Create a full-bleed Three.js background with a metallic geometric mark. Add slow idle rotation, pointer parallax, and raycast-driven panel highlights.',
+    preview: <ReactiveThreeBackground />,
+    previewTheme: 'dark' as const,
+  },
 ]
 
 export function BlocksPage() {
@@ -88,9 +109,9 @@ export function BlocksPage() {
     <main className="blocks-page">
       <header className="blocks-header">
         <div className="blocks-container blocks-header__inner">
-          <a className="blocks-brand" href="/">TRIONN<span>Blocks</span></a>
-          <nav><a className="is-current" href="/blocks">Blocks</a><a href="/">Preview site</a></nav>
-          <a className="blocks-header__action" href="/">Open experience</a>
+          <a className="blocks-brand" href="/">LUNA<span>Blocks</span></a>
+          <nav><a href="/#cases">Cases</a><a className="is-current" href="/blocks">Blocks</a><a href="/playgrounds">Playgrounds</a></nav>
+          <a className="blocks-header__action" href="/copies/trionn">Open copy</a>
         </div>
       </header>
 
@@ -114,7 +135,7 @@ export function BlocksPage() {
         {visibleBlocks.map((block) => <BlockCard key={block.name} {...block}>{block.preview}</BlockCard>)}
         {visibleBlocks.length === 0 && <p className="blocks-empty">No blocks match “{query}”.</p>}
       </section>
-      <footer className="blocks-footer"><div className="blocks-container"><span>TRIONN Blocks</span><span>React / GSAP / CSS</span></div></footer>
+      <footer className="blocks-footer"><div className="blocks-container"><span>LUNA Blocks</span><span>React / GSAP / CSS</span></div></footer>
     </main>
   )
 }

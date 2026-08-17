@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { HomePage } from '../../views/HomePage'
+
+const description = 'TRIONN Hero 的独立 WebGL 学习复刻与案例研究：拆解 DOM、Three.js、动效和声音，并记录材质参数、性能策略与可复用结论。'
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'TRIONN Hero 完整复刻与 WebGL 案例研究',
+  name: 'TRIONN Hero Reconstruction',
+  url: new URL('/copies/trionn', Astro.site).toString(),
+  description,
+  inLanguage: 'zh-CN',
+  articleSection: ['模块拆解', '参数实验', '性能提升', '可复用结论'],
+  keywords: ['Three.js', 'WebGL', 'GSAP', 'React', 'digital light', 'interaction design'],
+  isBasedOn: 'https://trionn.com/',
+  author: { '@type': 'Person', name: 'LUNA' },
+}
+---
+
+<BaseLayout title="TRIONN Hero 完整复刻与 WebGL 案例研究 | LUNA" description={description} image="/assets/previews/trionn-copy.png" pageType="article" structuredData={structuredData}>
+  <HomePage client:load />
+
+  <article id="case-study" class="case-study">
+    <header class="case-study__header">
+      <div class="case-study__nav">
+        <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
+        <a href="/#cases">All cases &#8599;</a>
+      </div>
+      <p class="archive-eyebrow">Case 01 / Reconstruction Study</p>
+      <h1>TRIONN Hero：从视觉复刻到可复用的 WebGL 方法</h1>
+      <div class="case-study__lead">
+        <p>上方是可以直接体验的复刻结果。下方不是代码清单，而是对画面结构、参数选择和工程取舍的完整解释。</p>
+        <dl>
+          <div><dt>Focus</dt><dd>Digital light / Interaction</dd></div>
+          <div><dt>Stack</dt><dd>React / Three.js / GSAP</dd></div>
+          <div><dt>Status</dt><dd>Reconstruction v1</dd></div>
+        </dl>
+      </div>
+      <aside class="case-study__notice">
+        <strong>学习复刻说明</strong>
+        <p>本页面是 LUNA 为学习 WebGL 与交互设计制作的独立复刻，不代表 TRIONN 官方。原始创意、品牌与视觉归 <a href="https://trionn.com/" rel="external noreferrer">TRIONN</a> 所有。</p>
+      </aside>
+    </header>
+
+    <section class="case-outputs" aria-labelledby="case-outputs-title">
+      <header>
+        <p class="archive-eyebrow">Derived from this case</p>
+        <h2 id="case-outputs-title">从研究到可复用资产</h2>
+        <p>完整体验留在 Case；稳定、可迁移的交互进入 Blocks；需要通过改变参数理解的视觉问题进入 Playgrounds。</p>
+      </header>
+      <div>
+        <a href="/blocks">
+          <span>01 / Reusable</span>
+          <strong>Blocks</strong>
+          <p>Kinetic Title、Project CTA、Electric Guide Lines、Reactive 3D Mark</p>
+          <b>04 &#8599;</b>
+        </a>
+        <a href="/playgrounds">
+          <span>02 / Experimental</span>
+          <strong>Playgrounds</strong>
+          <p>Material &amp; Light：材质、灯光与相机参数的实时实验</p>
+          <b>01 &#8599;</b>
+        </a>
+      </div>
+    </section>
+
+    <nav class="case-study__toc" aria-label="Case study chapters">
+      <a href="#breakdown"><span>01</span>模块拆解</a>
+      <a href="#experiments"><span>02</span>参数实验</a>
+      <a href="#performance"><span>03</span>性能提升</a>
+      <a href="#findings"><span>04</span>可复用结论</a>
+    </nav>
+
+    <section id="breakdown" class="research-chapter">
+      <header><span>01</span><p>Breakdown</p><h2>模块拆解</h2></header>
+      <div class="research-chapter__body">
+        <p class="research-chapter__summary">这个 Hero 不是“一张 3D 图”，而是多个层次共享同一个交互状态。拆开以后，每一层的职责反而很清楚。</p>
+        <div class="research-chapter__grid">
+          <section><h3>DOM 前景</h3><p>导航、标题、按钮和数据仍由 HTML 呈现，保证排版、链接与可访问性。前景使用 <code>mix-blend-mode: difference</code>，让文字随着背后明暗自动反色。</p></section>
+          <section><h3>Three.js 背景</h3><p>金属符号、环境反射和粒子爆裂由 WebGL 渲染。Canvas 只负责真正需要空间、光照和材质计算的内容。</p></section>
+          <section><h3>交互与共享状态</h3><p>Raycaster 读取指针命中；滚动、悬停、按压爆裂和入场动画共同写入 <code>explodeAmt</code>，DOM 与场景由同一个强度值协调。</p></section>
+          <section><h3>声音与引导线</h3><p>声音由用户主动开启，并响应爆裂事件；电流引导线使用独立 2D Canvas，避免把轻量视觉也塞进 Three.js 场景。</p></section>
+        </div>
+        <pre><code>explodeAmt = max(scrollProgress, hoverAmt, burstContrib, introAmt)</code></pre>
+      </div>
+    </section>
+
+    <section id="experiments" class="research-chapter">
+      <header><span>02</span><p>Experiments</p><h2>参数实验</h2></header>
+      <div class="research-chapter__body">
+        <p class="research-chapter__summary">参数不是最终资产，但参数组合会决定资产如何被看见。先控制变量，再判断“更亮”“更像玻璃”到底来自哪一个环节。</p>
+        <div class="research-values" aria-label="Current scene parameters">
+          <div><span>Metalness</span><strong>1.00</strong><p>让环境反射成为主要表面信息。</p></div>
+          <div><span>Roughness</span><strong>0.08</strong><p>保留清晰高光，避免金属变灰。</p></div>
+          <div><span>Transmission</span><strong>0.35</strong><p>加入少量透射层次，而不是做纯玻璃。</p></div>
+          <div><span>Clearcoat</span><strong>1.00</strong><p>用第二层高光强化精致感。</p></div>
+          <div><span>Camera FOV</span><strong>35°</strong><p>压缩透视，接近产品摄影的观看方式。</p></div>
+          <div><span>Camera Z</span><strong>7.60</strong><p>与 FOV 一起决定主体占屏比例。</p></div>
+        </div>
+        <p>材质数值必须和环境贴图、色调映射、曝光及物体尺度一起判断。本案例采用 ACES Filmic Tone Mapping。你也可以在 <a href="/playgrounds">Material &amp; Light Playground &#8599;</a> 中独立修改材质和灯光，直接比较结果。</p>
+      </div>
+    </section>
+
+    <section id="performance" class="research-chapter">
+      <header><span>03</span><p>Performance</p><h2>性能提升</h2></header>
+      <div class="research-chapter__body">
+        <p class="research-chapter__summary">性能不是最后统一“优化”，而是从初始化、每帧成本到离开页面后的释放，逐段控制预算。</p>
+        <div class="research-status">
+          <section><span>Implemented</span><h3>已经处理</h3><ul><li>非关键场景初始化交给 <code>requestIdleCallback</code>，最长等待 700ms。</li><li>WebGL renderer 的像素比上限为 1.5，引导 Canvas 上限为 1。</li><li>爆裂期间节流环境反射更新，减少昂贵的重复计算。</li><li>卸载时释放 renderer、geometry、material、environment、audio context 与 Canvas。</li></ul></section>
+          <section><span>Next measurement</span><h3>仍需继续</h3><ul><li>Three.js 生产 chunk 仍超过 500KB，需要测量首屏收益后再决定拆包或预加载策略。</li><li>需要在真实中低端移动设备记录帧时间、显存峰值和首次可交互时间。</li><li>应补充 <code>prefers-reduced-motion</code> 下的场景降级与交互替代。</li></ul></section>
+        </div>
+      </div>
+    </section>
+
+    <section id="findings" class="research-chapter">
+      <header><span>04</span><p>Findings</p><h2>可复用结论</h2></header>
+      <div class="research-chapter__body">
+        <ol class="research-findings">
+          <li><span>01</span><div><h3>先按渲染职责拆层</h3><p>文本和链接优先留在 DOM；只有真正依赖空间、材质和大量粒子的部分进入 WebGL。</p></div></li>
+          <li><span>02</span><div><h3>复杂交互收敛成少量连续值</h3><p>滚动、悬停和按压不必各写一套动画。把输入映射到统一强度，视觉系统更容易组合和调试。</p></div></li>
+          <li><span>03</span><div><h3>材质必须在真实光照语境中调</h3><p>单独记住 roughness 或 transmission 没有意义；环境、曝光、色调映射和相机共同决定最终画面。</p></div></li>
+          <li><span>04</span><div><h3>把生命周期当成视觉实现的一部分</h3><p>延迟重任务、限制像素比、减少高成本更新并完整释放资源，决定了效果能否真正用于网页。</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="case-study__footer">
+      <p>Next: 继续补充参数对比图、设备性能数据与更多案例。</p>
+      <a href="/#cases">返回 Cases &#8599;</a>
+    </footer>
+  </article>
+</BaseLayout>

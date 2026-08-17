@@ -1,0 +1,151 @@
+---
+title: "DeepSeek Harness 的 64 天 1.2 万次提交：一家公司如何把「审批」也自动化了"
+description: "拆解 deepseek-ai/deepseek-harness：64 天 12,293 次提交、37 位贡献者、前 6 人贡献 78%、45% 是 merge、几乎没有 issue。效率不是人海战术，而是把任务拆解、质量评审、合并审批全部制度化和自动化——人只守决策边界。附一个真实 PR 从需求到合入的完整时间线。"
+pubDate: 2026-08-14
+updatedDate: 2026-08-14
+tags: ["deepseek", "harness", "ai-agents", "github", "engineering-culture", "agent-development"]
+isDraft: false
+relatedPosts: []
+---
+
+最近 X 上有人发了条推文：打开 DeepSeek 的官方仓库吓一跳——**64 天 13,000 次提交、37 位贡献者、前 6 人贡献约 80%**。
+
+我把它全量拉下来验证了一下，数字基本属实：
+
+- 12,293 次提交，从 2026-06-10 到 2026-08-13，正好 64 天
+- 37 位贡献者，前 6 人占 **77.6%**，第一名 Tianyi Cui 一人 5,235 条（42.6%）
+- 平均每天 192 次提交，峰值日 887 条（7/30）
+- 周末无休：周六 947 条、周日 1,511 条
+
+64 天、6 个主力、1.2 万次提交。怎么做到的？
+
+答案不是"人多"、不是"996"，而是：**他们把传统软件工程里最耗人工的两个环节——任务拆解和质量审批——全部制度化和自动化了**。人只守决策边界。
+
+这篇把完整机制拆开，最后附一个真实 PR 从需求到合入的全程时间线。
+
+## 先看提交结构：数据自己会说话
+
+分析提交历史，几个反直觉的数字：
+
+**45.6% 是 merge 提交**（5,601 / 12,293）。主力成员的提交里一半以上是 merge：Tianyi Cui 2,980/5,235（56%）、Yichen Jiang 677/1,361（49%）。
+
+**merge 的时间戳是"脚本节奏"不是"人类节奏"**。08-13 一天内连续合了 20+ 个 PR：12:50、13:03、13:19、14:31、14:38、14:50、16:22、16:38……间隔几分钟一个，从中午合到晚上。merge 高峰集中在 17:00–00:00（单小时最高 277 条）。
+
+**绝大多数提交是微提交**：抽样 diff 中位数 4 个文件、+17 行，大量 +1/-1、+2/-2 的单文件提交。
+
+**PR 号开到了 #2521，但 merge commit 只数到 984 个**——64 天创建了至少 2,521 个 PR，约一半多没有落地。
+
+**Issue 几乎不存在**：全部 12,293 条提交消息里，引用 issue 的只有 1 条。
+
+这些数字拼起来是一个完整的工作流画像：**多任务并行、小步快跑、批量自动合并、不经过 issue 登记**。典型的 AI agent 辅助开发流水线。
+
+## 输入：薄需求 + 三层固化上下文
+
+"写需求（薄）"是什么意思？看看仓库里的真实"需求化石"——分支名就是需求全文：
+
+| 需求（分支名） | 全文翻译 |
+|---|---|
+| `agent/onboarding-modal-flow` | "onboarding 改成 modal 流程" |
+| `fix/withhold-oauth-only-providers` | "OAuth-only 提供商别出现在配置目录里" |
+| `codex/2503-english-onboarding-copy` | "给 PR #2503 补英文文案" |
+| `docs/readme-human-polish-3` | "README 人肉润色，第 3 轮" |
+
+没有 PRD、没有验收清单。就一行。**需求里没写的东西，全被仓库固化层接住了**：
+
+1. **怎么做** → `docs/cookbook/`（`adding-a-tool`、`adding-a-package`、`adding-an-llm-adapter`…）
+2. **为什么这么设计** → `.agents/notes/` 里的 Agent Notes：agent 自己写的 RFC/决策记录，每条保留"理由、放弃的方案、后果、需要的验证"
+3. **做到什么标准** → AGENTS.md 常驻规则 + CI 门禁（per-file 100% 覆盖率、lint、typecheck、doc-sync、i18n 配对）
+4. **必须带什么交付** → 规则原文："Every non-trivial change MUST add or update at least one Agent Note in the same PR"——改行为就必须写决策记录，不是光交代码
+
+所以需求可以薄，因为"该做什么"以外的所有问题，agent 都有地方查答案。派活的人只需要回答"要什么"，不回答"怎么做"。
+
+## 标准文档体系：一本写进仓库的「开发操作系统」
+
+这套东西能转起来，靠的是仓库里一整套职责分明、互相链接的标准文档。新 agent 入职先读它们，干活时随时查。逐个说清楚：
+
+**仓库根：入口和常驻规则**
+
+- `AGENTS.md` — 给 agent 的**常驻命令**：仓库布局、常用命令、质量门禁、secrets 策略、开发约定。每个 agent 会话都要带在上下文里的东西
+- `CLAUDE.md` — 一行字指向 AGENTS.md（Claude Code 的自动读取入口）
+- `CONTRIBUTING.md` — 给人看的贡献指南
+- `BENCHMARK.md` — 跑 benchmark 的方法
+
+**docs/：知识体系**
+
+- `docs/AGENTS.md` — **文档标准**：每类文档放哪个层级（tier taxonomy，"每个事实只有一个家"）、写作规则、字数预算
+- `docs/architecture.md` — 架构地图：核心包、agent loop、扩展点，改代码前先读
+- `docs/development.md` — 开发者入职 + 日常工作流 + CI 组织
+- `docs/cookbook/` — **操作 SOP**：`adding-a-tool`、`adding-a-package`、`adding-a-conversation-node`、`responding-to-pr-review-on-a-stack`…"新增一个 X"照着走
+- `docs/tool-catalog`、`config-catalog`、`module-graph`… — 从源码**自动生成**的参考目录，防手写漂移
+
+**.agents/：agent 专用**
+
+- `.agents/notes/` — **Agent Notes**：agent 写的 RFC/决策记录，按 `proposed → implemented → rejected → archived` 生命周期 + `architecture/feature/bug-fix/simplification/process/testing` 分类存放，每条记录"为什么、放弃了什么、需要的验证"
+- `.agents/skills/<name>/SKILL.md` — **技能卡**：每个动作的标准姿势，共 11 张：`dsh-code-review`（评审）、`dsh-pre-push-checks`（push 前检查）、`dsh-merging-stacked-prs`（合并 stacked PR）、`dsh-find-simplifications`（找简化）、`dsh-translate-docs`（翻译）、`dsh-trim-cot-leakage`（修剪思维链泄漏）、`dsh-doc-standards`（文档规范）、`dsh-prose-standard`（文风）、`dsh-doc-site-sync`（站点同步）、`dsh-archive-agent-notes`（归档 notes）、`record-browser-gif`（录 GIF）
+
+这套体系的精髓：**AGENTS.md 管"必须遵守"、Agent Notes 管"为什么"、Cookbook 管"怎么做"、Skills 管"标准姿势"、生成目录管"是什么"**。五类文档互相链接、职责不重叠——agent 要什么答案就知道去哪查，不用重新发明，也不用把规则抄进每个 prompt。
+
+## 大模块怎么拆：不是"AI 一把梭"，是 stacked PR 链
+
+大功能不是一次提交，而是拆成**互相依赖的 PR 栈（A←B←C）**。仓库里有专门的 skill（`dsh-merging-stacked-prs`）规范这个流程：
+
+- 每个 PR 一个分支、一个 base 链（底层指向 master，上层指向下一层）
+- 用 GitHub 官方 stack 功能 `gh stack link` 串起来，每层独立过 CI
+- 全绿后 `gh stack merge <stack> --yes` 一次全落，上层自动 rebase 到新 master
+
+这就是 45% merge 提交的直接来源：一个功能 = 一串小 PR = 一串小提交 + 一串 merge。
+
+大调查类任务则是**并行 subagent 按领域分工**。`dsh-find-simplifications` skill 里原话："Use parallel subagents... **Give each agent a domain and require evidence, not guesses**"。这就是为什么 6 个人能一天出 887 条提交——同时有几十个 agent 在各自分支上跑。
+
+## 审批也自动化了：CI 是评审员，脚本是合并员
+
+传统开源项目"人开一辆车，每个路口手动确认"。这里是**自动驾驶**：
+
+```
+需求 → agent 开分支写码 → 自动开 PR → CI 自动验收（唯一评审员）
+     → 全绿 → gh stack merge --yes 自动合并 → 完成
+                    ↑
+          人只在异常时介入：冲突 / CI 挂 / review 有意见 / 跨 fork
+```
+
+- **评审权交给 CI**：覆盖率、lint、typecheck、平台矩阵全绿 = 通过
+- **合并权交给脚本**：`gh stack merge --yes`，`--yes` 就是自动确认
+- **"不合并"也不是人否决的**：CI 红灯、被新版本取代、探索失败，agent 自己关掉 PR（那 1,500 个没落地的 PR 就是这么来的）
+
+人的角色是**规则制定者 + 异常仲裁员**：写需求、定门禁标准、只在管道喊停时介入（skill 里所有 "ask the user" 的场景——改 GitHub 状态、跨 fork、删分支都是高风险不可逆动作）。
+
+## 真实例子：一个需求从派活到合入的 17 小时
+
+用 `feat(web): unify onboarding dialogs`（统一 onboarding 弹窗）这个 PR 看完整链路：
+
+```
+08-11 23:13  test(web): update onboarding settings snapshot     ← 测试先行
+08-13 01:19  feat(web): unify onboarding dialogs                ← 主体实现
+08-13 16:32~17:03  Merge master ×3                              ← 同步上游（stack 保持干净）
+08-13 17:16  Merge PR #2503（agent/onboarding-modal-flow）       ← 主任务合入
+08-13 17:33  fix(web): add English onboarding copy              ← review 派的子需求
+08-13 18:02  test(web): cover onboarding branches               ← 补测试
+08-13 18:38  Merge PR #2512（codex/2503-english-onboarding-copy）← 子需求合入
+```
+
+一个"统一 onboarding"的需求，从测试先行到主 PR 合入约 17 小时；review 派生的子任务（补英文文案，注意分支名 `codex/2503-...` 里的 **2503 是父 PR 号**——需求溯源链直接写在分支名里）**2 小时**内又单独走完一轮。
+
+## 反直觉的三个发现
+
+**1. 没有 issue，PR 就是任务单。** 需求 → 分支名（任务标题）→ PR（任务说明）→ CI（验收）→ merge（交付）。Issue 的职能被完全替代，因为 agent 不维护人类用的台账。
+
+**2. 2,521 个 PR 只落了 984 个。** 一半多没落地。这是 agent 工作流的特征——**探索成本极低**：开个分支试，方向不对直接关，反正开分支不要钱。人类团队不会这么大方地开两千多个 PR 试错，agent 会。
+
+**3. 主力提交一半是 merge。** 不是"主力在合并别人的活"，是**自动合并管道用主力的 git 身份在跑**。人没有坐在 GitHub 网页上点按钮。
+
+## 结论
+
+DeepSeek Harness 效率牛逼的本质一句话：**把任务拆解和审批这两个最耗人工的环节也自动化了——评审权交给 CI，合并权交给脚本，人只留异常仲裁权**。
+
+这背后的真正资产不是某个天才 commit，而是一整套被写进仓库的"开发操作系统"：AGENTS.md（常驻规则）、Agent Notes（决策记忆）、Cookbook（操作 SOP）、Skills（行为规范）、CI（自动验收）、stacked PR 工作流（并行拆解）。
+
+6 个人 + agent 在 64 天跑出 2,500 个 PR、984 次合并、1.2 万次提交。这既是效率的胜利，也是"把流程变成产品"的胜利——**他们用自己做的 agent harness 开发 agent harness 本身，开发效率就是产品最好的 demo**。
+
+---
+
+*数据说明：基于 `git clone --filter=blob:none` 全量克隆 deepseek-ai/deepseek-harness 分析，12,293 条提交、作者分布、merge 比例、每日/小时节奏、diff 规模抽样均为本地 git 实测；分支命名、skill、AGENTS.md 引用来自仓库源码。*

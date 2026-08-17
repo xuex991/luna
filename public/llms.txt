@@ -1,0 +1,26 @@
+# LUNA
+
+> A study archive that reverse-engineers great work: reconstructing strong WebGL experiences (front-end reverse) and verifying engineering claims with real data (data reverse).
+
+## Primary pages
+
+- [Home](https://luna-az2.pages.dev/): Position, research method and complete content index.
+- [Front-end Reverse — TRIONN Hero Reconstruction](https://luna-az2.pages.dev/copies/trionn): An independent educational reconstruction and Chinese case study covering material, light, motion, audio, pointer interaction and engineering decisions. The original concept and brand belong to TRIONN.
+- [Blocks](https://luna-az2.pages.dev/blocks): Reusable React, GSAP, Canvas and Three.js interface blocks extracted from case-copy work.
+- [Material & Light Playground](https://luna-az2.pages.dev/playgrounds): An interactive tool for testing material and lighting parameters.
+- [Data Reverse / Teardowns](https://luna-az2.pages.dev/posts): Taking claims from X about engineering, platform and AI products, pulling the underlying data and verifying them with a falsifiable verdict.
+
+## Editorial method
+
+Two reverse-engineering tracks, one question: how is great work actually made?
+
+- Front-end reverse: select a strong case, reconstruct the complete experience, break it into modules, test parameters, improve performance, and publish reusable findings.
+- Data reverse: find a claim on X, pull public data, verify it line by line, publish a verdict (true / partially true / exaggerated / false) and one takeaway.
+
+## Content model
+
+- `src/content/posts/` — data reverse articles (MDX). Frontmatter: title, description, pubDate, tags, isDraft.
+- `src/content/cases/` — front-end reverse cases (MDX, gradually migrating from bespoke pages). Frontmatter: title, tools, preview, demoUrl.
+- Cases contain the complete reconstruction and its research narrative.
+- Blocks are reusable interactions extracted from a case.
+- Playgrounds turn important visual parameters from a case into interactive experiments.

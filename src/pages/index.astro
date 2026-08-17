@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content'
+import ArchiveCard from '../components/archive/ArchiveCard.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const posts = (await getCollection('posts', ({ data }) => data.isDraft !== true)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+)
+
+const caseCopies = [
+  {
+    index: '01',
+    name: 'TRIONN Hero Copy',
+    focus: 'Interactive studio hero',
+    stack: 'Three.js / GSAP / React',
+    status: 'Live',
+    href: '/copies/trionn',
+    preview: '/assets/previews/trionn-copy.png',
+    eager: true,
+  },
+]
+
+const blocks = [
+  { index: '01', name: 'Kinetic Title 01', focus: '模糊入场与末尾词组轮换的动态标题。', stack: 'React / GSAP', preview: '/assets/previews/kinetic-title.png', href: '/blocks', status: 'From Case 01' },
+  { index: '02', name: 'Project CTA 01', focus: '字符位移、箭头切换与反向下划线动画。', stack: 'React / CSS', preview: '/assets/previews/project-cta.png', href: '/blocks', status: 'From Case 01' },
+  { index: '03', name: 'Electric Guide Lines 01', focus: '响应指针接触的 Canvas 电流引导线。', stack: 'Canvas / Interaction', preview: '/assets/previews/electric-lines.png', href: '/blocks', status: 'From Case 01', darkPreview: true },
+  { index: '04', name: 'Reactive 3D Mark 01', focus: '支持视差、Raycaster 与闪光反馈的 3D 标记。', stack: 'Three.js / React', preview: '/assets/previews/reactive-mark.png', href: '/blocks', status: 'From Case 01', darkPreview: true },
+]
+
+const playgrounds = [
+  { index: '01', name: 'Material & Light', focus: '直接调节金属度、粗糙度、透射、灯光颜色与强度。', stack: 'Three.js / Live controls', preview: '/assets/previews/material-light.png', href: '/playgrounds', status: 'From Case 01', darkPreview: true },
+]
+
+const description = 'LUNA 通过逆向拆解优秀作品沉淀可复用的结论：前端逆向复刻 WebGL 案例，数据逆向验证 X 上的工程 claim。'
+---
+
+<BaseLayout title="LUNA | WebGL 案例拆解与实验档案" description={description}>
+  <main class="archive-home">
+    <header class="archive-nav">
+      <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
+      <nav aria-label="Primary navigation">
+        <a href="#cases">Cases</a>
+        <a href="#blocks">Blocks</a>
+        <a href="#playgrounds">Playgrounds</a>
+        <a href="/posts">Posts</a>
+      </nav>
+      <span>Study archive / 2026</span>
+    </header>
+
+    <section class="archive-intro" id="about" aria-labelledby="archive-title">
+      <p class="archive-eyebrow">定位 / 逆向研究 · 前端 × 数据</p>
+      <h1 id="archive-title">把优秀的东西拆开，看它是怎么做出来的。</h1>
+      <p class="archive-intro__description">LUNA 做两类逆向：前端逆向——完整复刻优秀 WebGL 案例，提炼可复用的交互与参数；数据逆向——拆解 X 上的工程 claim，拉数据验证，给出可证伪的结论。</p>
+      <div class="archive-method" aria-label="Research method">
+        <div><span>01</span><strong>优秀案例</strong><p>选择值得研究的完整数字体验。</p></div>
+        <div><span>02</span><strong>完整复刻</strong><p>重建视觉、动效和交互关系。</p></div>
+        <div><span>03</span><strong>模块拆解</strong><p>识别资产、代码、状态和渲染职责。</p></div>
+        <div><span>04</span><strong>参数实验</strong><p>改变参数并观察真实视觉结果。</p></div>
+        <div><span>05</span><strong>性能提升</strong><p>测量加载、渲染和资源释放成本。</p></div>
+        <div><span>06</span><strong>可复用结论</strong><p>沉淀可以迁移到新项目的方法。</p></div>
+      </div>
+    </section>
+
+    <section class="archive-section" id="cases" aria-labelledby="cases-title">
+      <header><span>01</span><h2 id="cases-title">Selected Cases</h2><p>可以体验的完整复刻，以及它背后的研究过程。</p><b>{caseCopies.length.toString().padStart(2, '0')}</b></header>
+      <div class="archive-list">
+        {caseCopies.map((item) => <ArchiveCard {...item} />)}
+      </div>
+    </section>
+
+    <section class="archive-section" id="blocks" aria-labelledby="blocks-title">
+      <header><span>02</span><h2 id="blocks-title">Blocks</h2><p>从完整 Case 中提炼出来、可以单独预览和复用的交互模块。</p><b>{blocks.length.toString().padStart(2, '0')}</b></header>
+      <div class="archive-list archive-list--four">
+        {blocks.map((item) => <ArchiveCard {...item} />)}
+      </div>
+    </section>
+
+    <section class="archive-section" id="playgrounds" aria-labelledby="playgrounds-title">
+      <header><span>03</span><h2 id="playgrounds-title">Playgrounds</h2><p>把 Case 中关键参数变成可直接操作、比较和验证的实验工具。</p><b>{playgrounds.length.toString().padStart(2, '0')}</b></header>
+      <div class="archive-list">
+        {playgrounds.map((item) => <ArchiveCard {...item} />)}
+      </div>
+    </section>
+
+    <section class="archive-section" id="posts" aria-labelledby="posts-title">
+      <header><span>04</span><h2 id="posts-title">数据逆向 / Teardowns</h2><p>拆解 X 上的工程 claim，拉数据验证，给出可证伪的结论。</p><b>{posts.length.toString().padStart(2, '0')}</b></header>
+      <div class="archive-list archive-list--posts">
+        {posts.slice(0, 4).map((post, i) => (
+          <a class="teardown-card" href={`/posts/${post.id}`}>
+            <header class="teardown-card__top">
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              <span>{post.data.tags.slice(0, 3).join(' / ')}</span>
+              <b aria-hidden="true">&#8599;</b>
+            </header>
+            <div class="teardown-card__body">
+              <strong>{post.data.title}</strong>
+              <p>{post.data.description}</p>
+            </div>
+            <footer class="teardown-card__footer">
+              <span>{post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
+              {post.data.readingTimeMinutes && <span>{post.data.readingTimeMinutes} 分钟</span>}
+            </footer>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <footer class="archive-footer">
+      <a class="archive-brand" href="/">LUNA<sup>01</sup></a>
+      <p>前端逆向与数据逆向，都是同一件事：研究好东西是怎么做出来的。</p>
+      <span>Shanghai / Online</span>
+    </footer>
+  </main>
+</BaseLayout>
