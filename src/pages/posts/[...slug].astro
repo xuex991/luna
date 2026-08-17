@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content'
 import getReadingTime from 'reading-time'
-import fs from 'node:fs'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import '../../styles/blog.css'
 
@@ -17,22 +16,13 @@ const { post } = Astro.props
 const { Content } = await render(post)
 const minutes = Math.ceil(getReadingTime(post.body ?? '').minutes)
 
-// 封面图(由 qwen-image 生成,public/assets/covers/ 下,缺失则跳过)
-const cover = `/assets/covers/${post.id}.png`
-const hasCover = fs.existsSync(new URL(`../../public/assets/covers/${post.id}.png`, import.meta.url))
-
 const title = `${post.data.title} | LUNA`
 const description = post.data.description ?? post.data.title
 const fmt = (d: Date) =>
   d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  pageType="article"
-  image={hasCover ? cover : undefined}
->
+<BaseLayout title={title} description={description} pageType="article">
   <div class="blog-shell">
     <header class="blog-nav">
       <a class="blog-nav__brand" href="/">LUNA<sup>01</sup></a>
@@ -63,8 +53,6 @@ const fmt = (d: Date) =>
             )}
           </div>
         </header>
-
-        {hasCover && <img class="blog-article__cover" src={cover} alt="" width="2752" height="1536" />}
 
         <div class="blog-article__body">
           <Content />

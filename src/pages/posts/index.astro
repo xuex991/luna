@@ -26,26 +26,34 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
       </nav>
     </header>
 
-    <main class="blog-frame">
-      <p class="blog-kicker">数据逆向 / Teardowns</p>
-      <div class="blog-list">
-        {posts.map((post) => (
-          <a class="blog-list__item" href={`/posts/${post.id}`}>
-            <span class="blog-list__title">{post.data.title}</span>
-            <p class="blog-list__desc">{post.data.description}</p>
-            <div class="blog-list__meta">
-              <span>{fmt(post.data.pubDate)}</span>
-              {minutesOf(post) > 0 && <span>· {minutesOf(post)} 分钟</span>}
-              {post.data.tags.length > 0 && <span>· {post.data.tags.slice(0, 3).join(' / ')}</span>}
-            </div>
-          </a>
-        ))}
-      </div>
+    <main class="blog-shell-split">
+      <section class="blog-primary">
+        <div class="blog-frame">
+          <p class="blog-kicker">数据逆向 / Teardowns</p>
+          <div class="blog-list">
+            {posts.map((post) => (
+              <a class="blog-list__item" href={`/posts/${post.id}`}>
+                <span class="blog-list__title">{post.data.title}</span>
+                <p class="blog-list__desc">{post.data.description}</p>
+                <div class="blog-list__meta">
+                  <span>{fmt(post.data.pubDate)}</span>
+                  {minutesOf(post) > 0 && <span>· {minutesOf(post)} 分钟</span>}
+                  {post.data.tags.length > 0 && <span>· {post.data.tags.slice(0, 3).join(' / ')}</span>}
+                </div>
+              </a>
+            ))}
+          </div>
 
-      <footer class="blog-footer">
-        <span>前端逆向 × 数据逆向 · 研究好东西是怎么做出来的</span>
-        <a href="/">返回首页</a>
-      </footer>
+          <footer class="blog-footer">
+            <span>前端逆向 × 数据逆向 · 研究好东西是怎么做出来的</span>
+            <a href="/">返回首页</a>
+          </footer>
+        </div>
+      </section>
+
+      <aside class="blog-side">
+        <img src="/assets/visuals/teardown-side.png" alt="LUNA 逆向研究插图" width="1792" height="2400" />
+      </aside>
     </main>
   </div>
 </BaseLayout>
