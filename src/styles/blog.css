@@ -25,13 +25,14 @@ html:has(.blog-shell) body {
 
 .blog-shell-split {
   display: grid;
-  grid-template-columns: minmax(0, 600px) minmax(280px, 467px);
+  grid-template-columns: minmax(0, 600px) minmax(260px, 467px);
   justify-content: space-between;
   align-items: start;
-  gap: clamp(2rem, 5vw, 5rem);
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 3.05rem clamp(1.5rem, 3.4vw, 3.05rem) 4rem;
+  gap: clamp(2rem, 6vw, 17rem);
+  width: 100%;
+  margin: 0;
+  padding: 49px clamp(24px, 3.4vw, 49px) 64px;
+  box-sizing: border-box;
 }
 
 .blog-primary {
@@ -54,20 +55,34 @@ html:has(.blog-shell) body {
 }
 
 .blog-bio {
-  margin: 0 0 3.25rem;
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  margin: 0 0 3.5rem;
   color: var(--blog-text);
+}
+.blog-bio p {
+  margin: 0 0 1.45rem;
+  font-size: 17px;
+  line-height: 27.2px;
+}
+.blog-bio p:last-child {
+  margin-bottom: 0;
+}
+.blog-bio a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--blog-text) 28%, transparent);
+}
+.blog-bio a:hover {
+  text-decoration-color: currentColor;
 }
 
 .blog-index h2 {
-  margin: 0 0 0.55em;
+  margin: 0 0 19px;
   color: var(--blog-heading);
   font-size: 1.45rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.4;
-  text-transform: none;
 }
 
 .blog-list {
@@ -79,45 +94,42 @@ html:has(.blog-shell) body {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline;
   gap: 1.25rem;
-  padding: 0.72em 0;
+  padding: 12.24px 0;
   border-bottom: 1px solid var(--blog-line);
   color: var(--blog-heading);
+  font-size: 17px;
+  line-height: 27.2px;
   text-decoration: none;
-  opacity: 0.88;
-}
-
-.blog-row:hover {
-  opacity: 1;
 }
 
 .blog-row span {
   min-width: 0;
-  font-size: 17px;
   font-weight: 400;
-  line-height: 1.6;
 }
 
 .blog-row time {
   color: var(--blog-muted);
-  font-family: var(--blog-sans);
-  font-size: 13px;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 22.4px;
   font-variant-numeric: lining-nums tabular-nums;
   white-space: nowrap;
 }
 
 .blog-side {
   position: sticky;
-  top: 3.05rem;
+  top: 49px;
   align-self: start;
 }
 
 .blog-side img {
   display: block;
   width: 100%;
-  height: min(800px, 86svh);
+  height: 800px;
+  max-height: calc(100svh - 98px);
   object-fit: cover;
-  object-position: center 42%;
-  border-radius: 14px;
+  object-position: center 40%;
+  border-radius: 16px;
 }
 
 @media (max-width: 860px) {
